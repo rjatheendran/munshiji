@@ -1,0 +1,376 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Expense Tracker</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="app-container">
+        <!-- Screen 1: Welcome Screen -->
+        <div id="welcome-screen" class="screen active">
+            <div class="welcome-content">
+                <div class="logo-container">
+                    <div class="logo">M</div>
+                </div>
+                <h1 class="app-title">Munshiji</h1>
+                <p class="app-subtitle">Lets start tracking you expenses!</p>
+                <div class="loading-spinner-container">
+                    <div class="loading-spinner"></div>
+                </div>
+                <div class="version-info">Ver 1.0</div>
+            </div>
+        </div>
+
+        <!-- Screen 2: Main Menu -->
+        <div id="main-menu-screen" class="screen">
+            <div class="menu-container">
+                <h2 class="menu-title">Main Menu</h2>
+                <div class="menu-buttons">
+                    <button class="menu-btn" data-action="income">Set/View Income</button>
+                    <button class="menu-btn" data-action="categories">Edit Categories</button>
+                    <button class="menu-btn" data-action="limits">Set/View Limits</button>
+                    <button class="menu-btn" data-action="add-expense">Add Expense</button>
+                    <button class="menu-btn" data-action="view-expense">View/Edit Expense</button>
+                    <button class="menu-btn" data-action="savings">View Savings</button>
+                    <button class="menu-btn menu-btn-exit" data-action="exit">Exit App</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Screen 3: Set/View Income -->
+        <div id="income-view-screen" class="screen">
+            <div class="income-container">
+                <h2 class="income-header" id="income-header-text"></h2>
+                <div class="income-info">
+                    <p class="income-text" id="previous-income-text"></p>
+                    <p class="income-question">Do you want to continue with this or edit?</p>
+                </div>
+                <div class="income-actions">
+                    <button class="btn btn-primary" id="continue-income-btn">Continue</button>
+                    <button class="btn btn-secondary" id="edit-income-btn">Edit</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Screen 4: Edit Income -->
+        <div id="income-edit-screen" class="screen">
+            <div class="income-edit-container">
+                <h2 class="income-edit-header" id="income-edit-header-text"></h2>
+                <div class="income-input-group">
+                    <input type="number" id="income-input" class="input income-input" placeholder="Enter income amount" min="0" step="0.01">
+                    <button class="btn btn-primary btn-set-income" id="set-income-btn">Set</button>
+                </div>
+                <div class="income-message" id="income-success-message"></div>
+            </div>
+        </div>
+
+        <!-- Screen 5: Income Set Confirmation -->
+        <div id="income-confirmation-screen" class="screen">
+            <div class="income-container">
+                <div class="income-confirmation">
+                    <p class="confirmation-text" id="income-confirmation-text"></p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Screen 6: Categories Main -->
+        <div id="categories-main-screen" class="screen">
+            <div class="categories-container">
+                <h2 class="categories-title">Edit Categories</h2>
+                <div class="category-actions">
+                    <button class="btn btn-primary" id="add-category-btn">Add Category</button>
+                    <button class="btn btn-secondary" id="edit-category-btn">Edit Category</button>
+                </div>
+                <div class="categories-list" id="categories-list">
+                    <!-- Categories will be dynamically displayed here -->
+                </div>
+                <button class="btn btn-secondary btn-back-menu" id="categories-back-menu-btn">Back to Main Menu</button>
+            </div>
+        </div>
+
+        <!-- Screen 7: Add Category -->
+        <div id="add-category-screen" class="screen">
+            <div class="category-edit-container">
+                <h2 class="category-edit-header">Add the category</h2>
+                <div class="category-input-group">
+                    <input type="text" id="category-input" class="input category-input" placeholder="Enter category name">
+                    <button class="btn btn-primary btn-set-category" id="set-category-btn">Set</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Screen 8: Category Added Confirmation -->
+        <div id="category-confirmation-screen" class="screen">
+            <div class="category-confirmation-container">
+                <div class="category-confirmation">
+                    <p class="confirmation-text" id="category-confirmation-text"></p>
+                    <p class="confirmation-subtitle">Your updated list of categories are</p>
+                    <div class="categories-list" id="confirmation-categories-list">
+                        <!-- Updated categories will be displayed here -->
+                    </div>
+                    <button class="btn btn-primary btn-back-menu" id="back-to-menu-btn">Back to Main Menu</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Screen 9: Select Category to Edit -->
+        <div id="edit-category-select-screen" class="screen">
+            <div class="category-edit-container">
+                <h2 class="category-edit-header">Which category would you like to edit?</h2>
+                <div class="categories-list" id="edit-category-list">
+                    <!-- Categories will be dynamically displayed as clickable buttons -->
+                </div>
+            </div>
+        </div>
+
+        <!-- Screen 10: Edit Category Form -->
+        <div id="edit-category-form-screen" class="screen">
+            <div class="category-edit-container">
+                <h2 class="category-edit-header" id="edit-category-header-text"></h2>
+                <div class="category-input-group">
+                    <input type="text" id="edit-category-input" class="input category-input" placeholder="Enter new category name">
+                    <div class="category-error-message" id="edit-category-error"></div>
+                    <div class="category-edit-actions">
+                        <button class="btn btn-primary" id="update-category-btn">Set</button>
+                        <button class="btn btn-secondary" id="cancel-edit-category-btn">Back</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Screen 11: Set/View Limits -->
+        <div id="limits-screen" class="screen">
+            <div class="limits-container">
+                <h2 class="limits-title">Set/View Limits of the categories below</h2>
+                <div class="limits-scroll-container" id="limits-list">
+                    <!-- Per-category limits inputs will be rendered here -->
+                </div>
+                <div class="limits-message" id="limits-message"></div>
+                <div class="limits-actions">
+                    <button class="btn btn-primary" id="set-limits-btn">Set</button>
+                    <button class="btn btn-secondary" id="back-limits-menu-btn">Back to Main Menu</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Screen 12: Add Expense -->
+        <div id="add-expense-screen" class="screen">
+            <div class="expense-container">
+                <h2 class="expense-title">Add your expense</h2>
+                <div class="expense-form">
+                    <div class="form-group">
+                        <label for="expense-date">Date</label>
+                        <input type="date" id="expense-date" class="input expense-input">
+                        <div class="field-error" id="expense-date-error"></div>
+                    </div>
+                    <div class="form-group">
+                        <label for="expense-category">Category</label>
+                        <select id="expense-category" class="input expense-input">
+                            <!-- Options will be populated from categories -->
+                        </select>
+                        <div class="field-error" id="expense-category-error"></div>
+                        <div class="expense-limit-message" id="expense-limit-message"></div>
+                    </div>
+                    <div class="form-group">
+                        <label for="expense-value">Expense Value</label>
+                        <input type="number" id="expense-value" class="input expense-input" min="0" step="0.01" placeholder="Enter amount">
+                        <div class="field-error" id="expense-value-error"></div>
+                    </div>
+                    <div class="form-group">
+                        <label for="expense-comment">Item/Comment</label>
+                        <input type="text" id="expense-comment" class="input expense-input" placeholder="Enter item or comment">
+                        <div class="field-error" id="expense-comment-error"></div>
+                    </div>
+                    <button class="btn btn-primary expense-add-btn" id="expense-add-btn">Add</button>
+                    <button class="btn btn-secondary expense-back-btn" id="expense-back-btn">Back to Main Menu</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Screen 13: Expense Added Confirmation -->
+        <div id="expense-added-screen" class="screen">
+            <div class="expense-container">
+                <div class="expense-confirmation">
+                    <p class="confirmation-text">Expense Added!</p>
+                    <p class="confirmation-subtitle">Would you like to add another expense?</p>
+                    <div class="expense-confirmation-actions">
+                        <button class="btn btn-primary" id="expense-add-another-btn">Yes</button>
+                        <button class="btn btn-secondary" id="expense-no-more-btn">No</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Screen 14: View/Edit Expenses Main -->
+        <div id="view-edit-expenses-screen" class="screen">
+            <div class="view-expenses-container">
+                <h2 class="view-expenses-title">View/Edit Expenses</h2>
+                <div class="view-expenses-actions">
+                    <button class="btn btn-primary" id="view-monthwise-expenses-btn">View Month-wise expenses</button>
+                    <button class="btn btn-secondary" id="edit-expense-btn">Edit Expense</button>
+                    <button class="btn btn-secondary" id="download-expenses-btn">Download</button>
+                    <button class="btn btn-secondary" id="back-view-expenses-menu-btn">Back to Main Menu</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Screen 15: Select Month for Expenses -->
+        <div id="view-expenses-month-select-screen" class="screen">
+            <div class="view-expenses-container">
+                <h2 class="view-expenses-title">Which month's expense would you like to view?</h2>
+                <div class="month-buttons" id="month-buttons-container">
+                    <!-- Month buttons will be rendered here -->
+                </div>
+                <button class="btn btn-secondary month-summary-back-btn" id="month-select-back-btn">Back</button>
+            </div>
+        </div>
+
+        <!-- Screen 16: Month-wise Expense Summary -->
+        <div id="view-expenses-month-summary-screen" class="screen">
+            <div class="view-expenses-container">
+                <h2 class="view-expenses-title" id="month-summary-title"></h2>
+                <div class="month-summary-overview">
+                    <p id="month-summary-totals"></p>
+                    <p id="month-summary-percentage"></p>
+                </div>
+                <div class="month-summary-scroll-container">
+                    <div class="month-summary-list-header">
+                        <span>Category</span>
+                        <span>Total Expense</span>
+                        <span>Total Limit</span>
+                        <span>% Used</span>
+                    </div>
+                    <div class="month-summary-list" id="month-summary-list">
+                        <!-- Per-category summary rows here -->
+                    </div>
+                </div>
+                <button class="btn btn-secondary month-summary-back-btn" id="month-summary-back-btn">Back</button>
+            </div>
+        </div>
+
+        <!-- Screen 17: Select Month for Editing Expenses -->
+        <div id="edit-expenses-month-select-screen" class="screen">
+            <div class="view-expenses-container">
+                <h2 class="view-expenses-title">Which month's expenses would you like to edit?</h2>
+                <div class="month-buttons" id="edit-month-buttons-container">
+                    <!-- Month buttons will be rendered here -->
+                </div>
+                <button class="btn btn-secondary month-summary-back-btn" id="edit-month-select-back-btn">Back</button>
+            </div>
+        </div>
+
+        <!-- Screen 18: Edit Expenses List -->
+        <div id="edit-expenses-list-screen" class="screen">
+            <div class="view-expenses-container">
+                <h2 class="view-expenses-title" id="edit-expenses-month-title"></h2>
+                <div class="edit-expenses-scroll-container">
+                    <div class="edit-expenses-list-header">
+                        <span>Date</span>
+                        <span>Category</span>
+                        <span>Expense Value</span>
+                        <span>Item/Comment</span>
+                    </div>
+                    <div class="edit-expenses-list" id="edit-expenses-list">
+                        <!-- Editable expense rows will be rendered here -->
+                    </div>
+                </div>
+                <div class="edit-expenses-actions">
+                    <button class="btn btn-primary" id="save-expenses-btn">Set</button>
+                    <button class="btn btn-secondary" id="edit-expenses-list-back-btn">Back</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Screen 19: Expense Modified Confirmation -->
+        <div id="expense-modified-screen" class="screen">
+            <div class="expense-container">
+                <div class="expense-confirmation">
+                    <p class="confirmation-text">Expense Modified!</p>
+                    <p class="confirmation-subtitle">Do you want to edit more expenses?</p>
+                    <div class="expense-confirmation-actions">
+                        <button class="btn btn-primary" id="edit-more-expenses-btn">Yes</button>
+                        <button class="btn btn-secondary" id="no-more-edit-expenses-btn">No</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Screen 20: Download Expenses -->
+        <div id="download-expenses-screen" class="screen">
+            <div class="view-expenses-container">
+                <h2 class="view-expenses-title">Which month's expenses would you like to download?</h2>
+                <div class="month-buttons" id="download-month-buttons-container">
+                    <!-- Month buttons will be rendered here -->
+                </div>
+                <div class="download-divider">
+                    <p class="download-divider-text">Or enter a date range</p>
+                </div>
+                <div class="date-range-container">
+                    <div class="form-group">
+                        <label for="download-from-date">From Date</label>
+                        <input type="date" id="download-from-date" class="input expense-input">
+                    </div>
+                    <div class="form-group">
+                        <label for="download-to-date">To Date</label>
+                        <input type="date" id="download-to-date" class="input expense-input">
+                    </div>
+                </div>
+                <div class="download-actions">
+                    <button class="btn btn-primary" id="download-data-btn">Download</button>
+                    <button class="btn btn-secondary" id="download-back-btn">Back</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Screen 21: Download Confirmation -->
+        <div id="download-confirmation-screen" class="screen">
+            <div class="expense-container">
+                <div class="expense-confirmation">
+                    <p class="confirmation-text">Data downloaded</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Screen 22: View Savings Main -->
+        <div id="view-savings-screen" class="screen">
+            <div class="view-expenses-container">
+                <h2 class="view-expenses-title">View your Monthly Savings</h2>
+                <div class="month-buttons" id="savings-month-buttons-container">
+                    <!-- Month buttons will be rendered here -->
+                </div>
+                <div class="savings-yearly-total">
+                    <p class="savings-total-label">Total savings for the year</p>
+                    <p class="savings-total-value" id="yearly-savings-total"></p>
+                </div>
+                <button class="btn btn-secondary month-summary-back-btn" id="savings-back-btn">Back</button>
+            </div>
+        </div>
+
+        <!-- Screen 23: Monthly Savings Detail -->
+        <div id="monthly-savings-detail-screen" class="screen">
+            <div class="view-expenses-container">
+                <h2 class="view-expenses-title" id="monthly-savings-title"></h2>
+                <div class="savings-monthly-total">
+                    <p class="savings-total-label">Total savings for this month</p>
+                    <p class="savings-total-value" id="monthly-savings-total"></p>
+                </div>
+                <div class="month-summary-scroll-container">
+                    <div class="month-summary-list-header">
+                        <span>Category</span>
+                        <span>Limit</span>
+                        <span>Expenses</span>
+                        <span>Savings</span>
+                    </div>
+                    <div class="month-summary-list" id="category-savings-list">
+                        <!-- Category-wise savings will be displayed here -->
+                    </div>
+                </div>
+                <button class="btn btn-secondary month-summary-back-btn" id="monthly-savings-back-btn">Back</button>
+            </div>
+        </div>
+    </div>
+    <script src="app.js"></script>
+</body>
+</html>
