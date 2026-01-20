@@ -293,11 +293,32 @@ const expenseTracker = new ExpenseTracker();
 // Track active timeouts to prevent interference
 let activeTimeouts = [];
 
-// Screen navigation
-function showScreen(screenId) {
+// Navigation history stack for back button handling
+let navigationHistory = [];
+let isNavigatingBack = false;
+
+// Screen navigation with history tracking
+function showScreen(screenId, addToHistory = true) {
     // Clear any pending timeouts that might interfere
     activeTimeouts.forEach(timeout => clearTimeout(timeout));
     activeTimeouts = [];
+    
+    // Get current screen
+    const currentScreen = document.querySelector('.screen.active');
+    const currentScreenId = currentScreen ? currentScreen.id : null;
+    
+    // Add to history if not navigating back and not the same screen
+    if (addToHistory && !isNavigatingBack && currentScreenId && currentScreenId !== screenId) {
+        navigationHistory.push(currentScreenId);
+        // Push state to browser history for back button support
+        history.pushState({ screen: screenId }, '', '');
+        // Limit history to prevent memory issues
+        if (navigationHistory.length > 50) {
+            navigationHistory.shift();
+        }
+    }
+    
+    isNavigatingBack = false;
     
     // Hide all screens first - force hide with inline style
     const allScreens = document.querySelectorAll('.screen');
@@ -316,12 +337,72 @@ function showScreen(screenId) {
     }
 }
 
+// Navigate back to previous screen
+function navigateBack() {
+    const currentScreen = document.querySelector('.screen.active');
+    const currentScreenId = currentScreen ? currentScreen.id : null;
+    
+    // If on main menu, show exit confirmation
+    if (currentScreenId === 'main-menu-screen') {
+        showExitConfirmation();
+        return;
+    }
+    
+    // If there's history, go back
+    if (navigationHistory.length > 0) {
+        isNavigatingBack = true;
+        const previousScreen = navigationHistory.pop();
+        showScreen(previousScreen, false);
+    } else {
+        // No history, go to main menu
+        isNavigatingBack = true;
+        showScreen('main-menu-screen', false);
+    }
+}
+
+// Show exit confirmation screen
+function showExitConfirmation() {
+    const exitScreen = document.getElementById('exit-confirmation-screen');
+    if (exitScreen) {
+        showScreen('exit-confirmation-screen');
+    } else {
+        // Fallback to browser confirm if screen doesn't exist
+        if (confirm('Are you sure you want to exit?')) {
+            handleAppExit();
+        }
+    }
+}
+
+// Handle app exit
+function handleAppExit() {
+    // Try to close the window (works if opened by script)
+    if (window.opener) {
+        window.close();
+    } else {
+        // For mobile browsers, we can't close the tab, but we can show a message
+        alert('Thank you for using Munshiji!');
+        // Try to navigate away (may not work in all browsers)
+        window.location.href = 'about:blank';
+    }
+}
+
 // Initialize app when DOM is loaded
 document.addEventListener('DOMContentLoaded', () => {
     console.log('Expense Tracker App initialized');
     
-    // Show welcome screen initially
-    showScreen('welcome-screen');
+    // Initialize navigation history
+    navigationHistory = [];
+    
+    // Handle browser back button (mobile back button)
+    window.addEventListener('popstate', (e) => {
+        navigateBack();
+    });
+    
+    // Push initial state to history
+    history.pushState({ screen: 'welcome-screen' }, '', '');
+    
+    // Show welcome screen initially (don't add to history)
+    showScreen('welcome-screen', false);
     
     // Auto-transition from welcome screen to main menu after 3 seconds
     setTimeout(() => {
@@ -510,6 +591,18 @@ document.addEventListener('DOMContentLoaded', () => {
         e.stopPropagation();
         showViewSavingsScreen();
     });
+    
+    // Handle exit confirmation buttons
+    document.getElementById('exit-yes-btn').addEventListener('click', (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        handleAppExit();
+    });
+    document.getElementById('exit-no-btn').addEventListener('click', (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        showScreen('main-menu-screen');
+    });
 
     // Handle month summary back button
     document.getElementById('month-summary-back-btn').addEventListener('click', (e) => {
@@ -538,6 +631,39 @@ document.addEventListener('DOMContentLoaded', () => {
         }
         showScreen('main-menu-screen');
     });
+
+    // Handle category expenses detail back button
+    const categoryExpensesBackBtn = document.getElementById('category-expenses-back-btn');
+    if (categoryExpensesBackBtn) {
+        categoryExpensesBackBtn.addEventListener('click', (e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            // Go back to the month summary screen
+            showScreen('view-expenses-month-summary-screen');
+        });
+    }
+
+    // Make month summary rows clickable to show category-wise expenses
+    const monthSummaryListEl = document.getElementById('month-summary-list');
+    if (monthSummaryListEl) {
+        monthSummaryListEl.addEventListener('click', (e) => {
+            const row = e.target.closest('.month-summary-row');
+            if (!row) return;
+
+            const category = row.getAttribute('data-category');
+            const yearAttr = row.getAttribute('data-year');
+            const monthIndexAttr = row.getAttribute('data-month-index');
+
+            if (!category || yearAttr === null || monthIndexAttr === null) return;
+
+            const year = parseInt(yearAttr, 10);
+            const monthIndex = parseInt(monthIndexAttr, 10);
+
+            if (isNaN(year) || isNaN(monthIndex)) return;
+
+            showCategoryExpensesDetailScreen(year, monthIndex, category);
+        });
+    }
     
     // Handle Enter key in category input
     document.getElementById('category-input').addEventListener('keypress', (e) => {
@@ -1023,7 +1149,10 @@ function showMonthSummaryScreen(year, monthIndex) {
         }
         
         rows.push(`
-            <div class="${rowClass}">
+            <div class="${rowClass}" 
+                 data-category="${category}" 
+                 data-year="${year}" 
+                 data-month-index="${monthIndex}">
                 <span>${category}</span>
                 <span>${catTotal.toFixed(2)}</span>
                 <span>${catLimit.toFixed(2)}</span>
@@ -1039,6 +1168,57 @@ function showMonthSummaryScreen(year, monthIndex) {
     }
 
     showScreen('view-expenses-month-summary-screen');
+}
+
+// Show detailed list of expenses for a specific category in a given month
+function showCategoryExpensesDetailScreen(year, monthIndex, category) {
+    const date = new Date(year, monthIndex, 1);
+    const monthKey = `${year}-${String(monthIndex + 1).padStart(2, '0')}`;
+    const monthName = expenseTracker.getMonthName(date);
+
+    const titleEl = document.getElementById('category-expenses-title');
+    const listEl = document.getElementById('category-expenses-list');
+
+    if (!titleEl || !listEl) {
+        console.error('Category expenses elements not found');
+        return;
+    }
+
+    titleEl.textContent = `${category} - ${monthName} ${year} expenses`;
+
+    // Get all expenses for this month and filter by category
+    const monthExpenses = expenseTracker.getExpensesForMonth(monthKey) || [];
+    const categoryExpenses = monthExpenses.filter(exp => exp.category === category);
+
+    if (categoryExpenses.length === 0) {
+        listEl.innerHTML = '<div class="edit-expense-row edit-expense-row-empty"><p>No expenses for this category in this month.</p></div>';
+        showScreen('category-expenses-detail-screen');
+        return;
+    }
+
+    // Sort by date ascending
+    categoryExpenses.sort((a, b) => {
+        const da = a.date ? new Date(a.date) : new Date(0);
+        const db = b.date ? new Date(b.date) : new Date(0);
+        return da - db;
+    });
+
+    const rows = categoryExpenses.map(exp => {
+        const dateStr = exp.date ? new Date(exp.date).toLocaleDateString() : '';
+        const amountStr = (parseFloat(exp.amount) || 0).toFixed(2);
+        const commentStr = exp.comment || exp.item || '';
+
+        return `
+            <div class="edit-expense-row">
+                <span>${dateStr}</span>
+                <span>${amountStr}</span>
+                <span>${commentStr}</span>
+            </div>
+        `;
+    });
+
+    listEl.innerHTML = rows.join('');
+    showScreen('category-expenses-detail-screen');
 }
 
 // -------- EDIT EXPENSES --------
@@ -1653,10 +1833,7 @@ function handleMenuAction(action) {
             showViewSavingsScreen();
             break;
         case 'exit':
-            if (confirm('Are you sure you want to exit the app?')) {
-                // For web app, we can't actually exit, but we can show a message
-                alert('Thank you for using Munshiji!');
-            }
+            showExitConfirmation();
             break;
         default:
             console.log('Unknown action:', action);

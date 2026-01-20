@@ -14,12 +14,17 @@
                 <div class="logo-container">
                     <div class="logo">M</div>
                 </div>
+                <div class="money-icons">
+                    <span class="money-icon">₹</span>
+                    <span class="money-icon">$</span>
+                    <span class="money-icon">€</span>
+                </div>
                 <h1 class="app-title">Munshiji</h1>
-                <p class="app-subtitle">Lets start tracking you expenses!</p>
+                <p class="app-subtitle">Let's track your expenses!</p>
                 <div class="loading-spinner-container">
                     <div class="loading-spinner"></div>
                 </div>
-                <div class="version-info">Ver 1.0</div>
+                <div class="version-info">Ver 1.1</div>
             </div>
         </div>
 
@@ -250,6 +255,24 @@
             </div>
         </div>
 
+        <!-- Screen 16b: Category-wise Expenses Detail -->
+        <div id="category-expenses-detail-screen" class="screen">
+            <div class="view-expenses-container">
+                <h2 class="view-expenses-title" id="category-expenses-title"></h2>
+                <div class="edit-expenses-scroll-container">
+                    <div class="edit-expenses-list-header">
+                        <span>Date</span>
+                        <span>Expense Value</span>
+                        <span>Item/Comment</span>
+                    </div>
+                    <div class="edit-expenses-list" id="category-expenses-list">
+                        <!-- Category-specific expenses will be rendered here -->
+                    </div>
+                </div>
+                <button class="btn btn-secondary month-summary-back-btn" id="category-expenses-back-btn">Back</button>
+            </div>
+        </div>
+
         <!-- Screen 17: Select Month for Editing Expenses -->
         <div id="edit-expenses-month-select-screen" class="screen">
             <div class="view-expenses-container">
@@ -368,6 +391,19 @@
                     </div>
                 </div>
                 <button class="btn btn-secondary month-summary-back-btn" id="monthly-savings-back-btn">Back</button>
+            </div>
+        </div>
+
+        <!-- Screen 24: Exit Confirmation -->
+        <div id="exit-confirmation-screen" class="screen">
+            <div class="expense-container">
+                <div class="expense-confirmation">
+                    <p class="confirmation-text">Are you sure you want to exit?</p>
+                    <div class="expense-confirmation-actions">
+                        <button class="btn btn-primary" id="exit-yes-btn">Yes</button>
+                        <button class="btn btn-secondary" id="exit-no-btn">No</button>
+                    </div>
+                </div>
             </div>
         </div>
     </div>

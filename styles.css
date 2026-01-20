@@ -6,7 +6,7 @@
 
 body {
     font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
-    background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+    background: linear-gradient(135deg, #fdfbfb 0%, #ebedff 40%, #e3f8ff 70%, #fef6ff 100%);
     background-attachment: fixed;
     color: #333;
     overflow-x: hidden;
@@ -15,10 +15,14 @@ body {
 .app-container {
     max-width: 100%;
     margin: 0 auto;
-    background-color: #fff;
+    background-color: #FFF9E6; /* light yellow pastel for all screens */
     min-height: 100vh;
     position: relative;
-    box-shadow: 0 0 40px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 0 40px rgba(0, 0, 0, 0.08);
+}
+
+.screen {
+    background-color: #FFF9E6; /* ensure each screen has the same pastel background */
 }
 
 /* Mobile-first responsive design */
@@ -219,6 +223,27 @@ body {
 
 .logo:hover {
     transform: scale(1.05);
+}
+
+.money-icons {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    margin-bottom: 20px;
+}
+
+.money-icon {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background: #fff9e6;
+    border: 1px solid #ffdd8a;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
+    color: #ff9800;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
 }
 
 .app-title {
