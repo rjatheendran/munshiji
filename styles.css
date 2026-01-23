@@ -136,6 +136,23 @@ body {
     display: block !important;
 }
 
+.btn-danger {
+    background: linear-gradient(135deg, #FF3B30 0%, #D32F2F 100%);
+    color: white;
+    box-shadow: 0 4px 12px rgba(255, 59, 48, 0.3);
+}
+
+.btn-danger:hover {
+    background: linear-gradient(135deg, #D32F2F 0%, #B71C1C 100%);
+    box-shadow: 0 6px 16px rgba(255, 59, 48, 0.4);
+    transform: translateY(-2px);
+}
+
+.btn-danger:active {
+    transform: translateY(0);
+    box-shadow: 0 2px 8px rgba(255, 59, 48, 0.3);
+}
+
 /* Header styles */
 .header {
     display: flex;
@@ -285,7 +302,7 @@ body {
 
 .version-info {
     position: absolute;
-    bottom: 30px;
+    bottom: 60px;
     left: 50%;
     transform: translateX(-50%);
     font-size: 14px;
@@ -968,10 +985,36 @@ body {
 .edit-expenses-list-header,
 .edit-expense-row {
     display: grid;
-    grid-template-columns: 1.2fr 1.5fr 1.2fr 2fr;
+    grid-template-columns: 0.4fr 1.2fr 1.5fr 1.2fr 2fr;
     gap: 8px;
     padding: 12px;
     align-items: center;
+}
+
+.btn-delete-expense {
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    background-color: #FF3B30;
+    color: white;
+    border: none;
+    font-size: 20px;
+    font-weight: 700;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s ease;
+    box-shadow: 0 2px 4px rgba(255, 59, 48, 0.3);
+}
+
+.btn-delete-expense:hover {
+    background-color: #D32F2F;
+    transform: scale(1.1);
+}
+
+.btn-delete-expense:active {
+    transform: scale(0.9);
 }
 
 .edit-expenses-list-header {
@@ -1050,6 +1093,73 @@ body {
     width: 100%;
     padding: 16px;
     font-size: 18px;
+}
+
+/* Category Expenses Detail Screen Styles */
+#category-expenses-detail-screen {
+    padding: 24px 20px;
+}
+
+.category-expenses-scroll-container {
+    max-height: 400px;
+    overflow-y: auto;
+    border: 1px solid #e0e0e0;
+    border-radius: 12px;
+    background-color: #fafafa;
+    margin-bottom: 16px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+.category-expenses-list-header,
+.category-expense-row {
+    display: grid;
+    grid-template-columns: 1fr 1.5fr 2.5fr;
+    gap: 12px;
+    padding: 12px;
+    align-items: center;
+}
+
+.category-expenses-list-header {
+    font-weight: 700;
+    background-color: #f5f5f5;
+    border-bottom: 2px solid #ddd;
+    color: #333;
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    font-size: 14px;
+}
+
+.category-expense-row {
+    border-bottom: 1px solid #eee;
+    background-color: #fff;
+    transition: background-color 0.2s ease;
+}
+
+.category-expense-row:hover {
+    background-color: #f8f8f8;
+}
+
+.category-expense-row:last-child {
+    border-bottom: none;
+}
+
+.category-expense-row span {
+    word-break: break-word;
+    padding: 4px 0;
+    font-size: 14px;
+    color: #333;
+}
+
+.category-expense-row span:first-child {
+    font-weight: 600;
+    color: #555;
+}
+
+.category-expense-row span:nth-child(2) {
+    font-weight: 600;
+    color: #007AFF;
+    text-align: right;
 }
 
 /* Download Expenses Screen Styles */
